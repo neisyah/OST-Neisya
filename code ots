@@ -1,0 +1,102 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX_SIZE 100
+
+// Definisi struktur Stack
+typedef struct {
+    char data[MAX_SIZE];
+    int top;
+} Stack;
+
+// Menginisialisasi stack kosong
+void initStack(Stack *s) {
+    s->top = -1;
+}
+
+// Fungsi untuk memeriksa apakah stack kosong
+bool isEmpty(Stack *s) {
+    return s->top == -1;
+}
+
+// Fungsi untuk memeriksa apakah stack penuh
+bool isFull(Stack *s) {
+    return s->top == MAX_SIZE - 1;
+}
+
+// Fungsi untuk mengambil elemen teratas dari stack (tanpa menghapusnya)
+char peek(Stack *s) {
+    if (!isEmpty(s)) {
+        return s->data[s->top];
+    } else {
+        return 0;
+    }
+}
+
+// Fungsi untuk menambahkan elemen ke dalam stack (push)
+void push(Stack *s, char data) {
+    if (!isFull(s)) {
+        s->top++;
+        s->data[s->top] = data;
+    }
+}
+
+// Fungsi untuk menghapus elemen teratas dari stack (pop)
+char pop(Stack *s) {
+    if (!isEmpty(s)) {
+        char data = s->data[s->top];
+        s->top--;
+        return data;
+    } else {
+        return 0;
+    }
+}
+
+// Fungsi untuk mengecek apakah tanda kurung berpasangan
+char isBalanced(char *str) {
+    Stack s;
+    initStack(&s);
+
+    for (int i = 0; str[i] != '\0'; i++) {
+        char ch = str[i];
+        if (ch == '(' || ch == '[' || ch == '{') {
+            push(&s, ch);
+        } else if (ch == ')' || ch == ']' || ch == '}') {
+            if (isEmpty(&s)) {
+                return 'N';  
+            }
+            char openingBracket = peek(&s);
+            if ((ch == ')' && openingBracket == '(') ||
+                (ch == ']' && openingBracket == '[') ||
+                (ch == '}' && openingBracket == '{')) {
+                pop(&s); 
+            } else {
+                return 'N'; 
+            }
+        }
+    }
+
+    if (isEmpty(&s)) {
+        return 'Y'; 
+    } else {
+        return 'N'; 
+    }
+}
+
+// Fungsi main
+int main() {
+    char str[MAX_SIZE];
+
+    printf("Masukkan string tanda kurung: ");
+    scanf("%s", str);
+
+    char hasil = isBalanced(str);
+
+    if (hasil == 'Y') {
+        printf("YES\n");
+    } else {
+        printf("NO\n");
+    }
+
+    return 0;
+}
